@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
+
 
 public class Minesweeper : MonoBehaviour
 {
@@ -8,6 +10,8 @@ public class Minesweeper : MonoBehaviour
     public int width = 9;
     public int height = 9;
     public Material cellMaterial;
+
+    RaycastHit tmpHitHighlight;
 
     void Start()
     {
@@ -24,11 +28,40 @@ public class Minesweeper : MonoBehaviour
 
                 go.transform.GetComponent<Renderer>().material = cellMaterial;
                 // Instantiate a new cell at the correct position
-               // GameObject cell = Instantiate(cellPrefab, new Vector3(x, y, 0), Quaternion.identity);
-               // cell.transform.parent = this.transform; // Set the cell's parent to the game board
+                // GameObject cell = Instantiate(cellPrefab, new Vector3(x, y, 0), Quaternion.identity);
+                // cell.transform.parent = this.transform; // Set the cell's parent to the game board
+                // Attach CellData script to the cell GameObject
+                CellData cellData = go.AddComponent<CellData>();
+                cellData.row = i;
+                cellData.col = j;
+
+                CellData.CreateCellWithBomb(go, i, j);
+
             }
         }
-        GameObject specificCell = GameObject.Find("[1,1]"); // Replace with the name of the cell you want to change
+        GameObject specificCell = GameObject.Find("[5,3]"); // Replace with the name of the cell you want to change
         specificCell.GetComponent<Renderer>().material.color = Color.red;
+
+        GameObject bomb = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        bomb.GetComponent<Renderer>().material.color = Color.black;
+
+        bomb.transform.position = specificCell.transform.position;
+
+
+
+    }
+    void Update()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            if (Physics.Raycast(ray, out tmpHitHighlight, 100))
+            {
+                Debug.Log($"We have a hit ");
+            }
+
+        }
     }
 }
+
