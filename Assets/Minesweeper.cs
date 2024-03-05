@@ -60,13 +60,13 @@ public class Minesweeper : MonoBehaviour
                 if (!cellData.IsBomb)
                 {
                     int bombCount = 0;
-                    for (int x = -1; x <= 1; x++)
+                    for (int x = -1; x <= 1; x++) // adjacent x- axis
                     {
-                        for (int y = -1; y <= 1; y++)
+                        for (int y = -1; y <= 1; y++) // adjacent y-axis 
                         {
-                            if (x == 0 && y == 0)
+                            if (x == 0 && y == 0) // skip the cell itself
                             {
-                                continue; // Skip the current cell
+                                continue; 
                             }
 
                             int checkX = i + x;
@@ -117,7 +117,7 @@ public class Minesweeper : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {   // if ray hits an object
 
-            if (Physics.Raycast(ray, out tmpHitHighlight, 100))
+            if (Physics.Raycast(ray, out tmpHitHighlight, 102))
             {
                 CellData cellData = tmpHitHighlight.collider.gameObject.GetComponent<CellData>();
 
@@ -149,8 +149,45 @@ public class Minesweeper : MonoBehaviour
                         {
                             Debug.LogError("Failed to load texture");
                         }
-                    }
+                        //check adjacent cells
+                        for (int i = 0; i < width; i++)
+                        {
+                            for (int j = 0; j < height; j++)
+                            {
+                                for (int x = -1; x <= 1; x++)
+                                {
+                                    for (int y = -1; y <= 1; y++)
+                                    {
+                                        if (x == 0 && y == 0)
+                                        {
+                                            continue; // Skip the current cell
+                                        }
 
+                                        int checkX = i + x;
+                                        int checkY = j + y;
+
+                                        // Check if the adjacent cell is within bounds
+                                        if (checkX >= 0 && checkX < width && checkY >= 0 && checkY < height)
+                                        {
+                                            CellData curCell = GameObject.Find($"[{checkX},{checkY}]").GetComponent<CellData>(); // Get the CellData component of the adjacent cell
+                                            if (curCell.cellValue == 0)
+                                            {
+                                                if (texture != null)
+                                                {
+                                                    curCell.GetComponent<Renderer>().material.EnableKeyword("_METALLICGLOSSMAP");
+                                                    curCell.GetComponent<Renderer>().material.SetTexture("_MetallicGlossMap", texture);
+                                                }
+                                                else
+                                                {
+                                                    Debug.LogError("Failed to load texture");
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                     if (cellData.cellValue == 1)
                     {
                         Texture2D texture = Resources.Load<Texture2D>("Number-one");
