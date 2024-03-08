@@ -18,6 +18,7 @@ public class Minesweeper : MonoBehaviour
 
     void Start()
     {
+
        // createBoard();
     }
 
@@ -25,18 +26,41 @@ public class Minesweeper : MonoBehaviour
     {
         this.width = width;
         this.height = height;
-        //ClearBoard(); // Clear existing board if any
         CreateNewBoard(); // Create new board
     }
-    /*
-    private void ClearBoard()
+
+    public void ClearBoard()
     {
-        // Destroy all child objects (cells) of the Minesweeper GameObject
-        foreach (Transform child in transform)
+        // Find all GameObjects with the name "[i,j]" and destroy them
+        for (int i = 0; i < width; i++)
         {
-            Destroy(child.gameObject);
+            for (int j = 0; j < height; j++)
+            {
+                GameObject cellObject = GameObject.Find($"[{i},{j}]");
+                if (cellObject != null)
+                {   
+                    Destroy(cellObject);
+                }
+                CellData cellData = GameObject.Find($"[{i},{j}]").GetComponent<CellData>();
+ 
+
+            }
         }
-    }*/
+
+        // Clear the board data or perform any additional cleanup
+    }
+
+    IEnumerator WaitS(GameObject bomba)
+    {
+        yield return new WaitForSeconds(3.0f);
+
+        GameObject canvasGameObject2 = GameObject.Find("Canvas");
+        canvasGameObject2.GetComponent<Canvas>().enabled = true;
+        GameObject canvasGameObject = GameObject.Find("CanvasOver");
+        canvasGameObject.GetComponent<Canvas>().enabled = false;
+        Destroy(bomba);
+    }
+
     void CreateNewBoard()
     {
 
@@ -139,7 +163,7 @@ public class Minesweeper : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {   // if ray hits an object
 
-            if (Physics.Raycast(ray, out tmpHitHighlight, 102))
+            if (Physics.Raycast(ray, out tmpHitHighlight, 100))
             {
                 CellData cellData = tmpHitHighlight.collider.gameObject.GetComponent<CellData>();
 
@@ -153,6 +177,12 @@ public class Minesweeper : MonoBehaviour
                     GameObject bomba = GameObject.CreatePrimitive(PrimitiveType.Sphere);
                     bomba.GetComponent<Renderer>().material.color = Color.black;
                     bomba.transform.position = cellData.transform.position;
+
+                    GameObject canvasGameObject = GameObject.Find("CanvasOver");
+                    canvasGameObject.GetComponent<Canvas>().enabled = true;
+                    ClearBoard();
+                    // wait 3 seconds
+                    StartCoroutine(WaitS(bomba)); // Pass the bomba GameObject reference to the coroutine
                 }
 
                 if (cellData != null && cellData.IsBomb ==false)

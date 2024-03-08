@@ -8,7 +8,7 @@ public class UIManager : MonoBehaviour
 
     public void StartGameEasy()
     {
-        minesweeper.CreateBoard(6, 6);
+        minesweeper.CreateBoard(7, 7);
         GameObject canvasGameObject = GameObject.Find("Canvas");
         canvasGameObject.GetComponent<Canvas>().enabled = false;
 
@@ -24,7 +24,7 @@ public class UIManager : MonoBehaviour
 
     public void StartGameHard()
     {
-        minesweeper.CreateBoard(15, 15);
+        minesweeper.CreateBoard(11, 11);
         GameObject canvasGameObject = GameObject.Find("Canvas");
         canvasGameObject.GetComponent<Canvas>().enabled = false;
 
