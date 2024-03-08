@@ -15,7 +15,29 @@ public class Minesweeper : MonoBehaviour
     //[SerializeField] private TextMeshPro myText;
     RaycastHit tmpHitHighlight;
     public TextMeshPro textMeshPro;
+
     void Start()
+    {
+       // createBoard();
+    }
+
+    public void CreateBoard(int width, int height)
+    {
+        this.width = width;
+        this.height = height;
+        //ClearBoard(); // Clear existing board if any
+        CreateNewBoard(); // Create new board
+    }
+    /*
+    private void ClearBoard()
+    {
+        // Destroy all child objects (cells) of the Minesweeper GameObject
+        foreach (Transform child in transform)
+        {
+            Destroy(child.gameObject);
+        }
+    }*/
+    void CreateNewBoard()
     {
 
 
